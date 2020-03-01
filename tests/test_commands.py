@@ -1,5 +1,6 @@
-from io import StringIO
+from io import StringIO, BytesIO
 
+import six
 from django.contrib.auth import get_user_model
 from django.core.management import call_command
 from django.core.management.base import CommandError
@@ -14,7 +15,7 @@ Application = get_application_model()
 class CreateApplicationTest(TestCase):
 
     def test_command_creates_application(self):
-        output = StringIO()
+        output = (BytesIO if six.PY2 else StringIO)()
         self.assertEqual(Application.objects.count(), 0)
         call_command(
             "createapplication",
@@ -34,8 +35,7 @@ class CreateApplicationTest(TestCase):
                 "--redirect-uris=http://example.com http://example2.com",
             )
 
-        self.assertIn("client_type", ctx.exception.args[0])
-        self.assertIn("authorization_grant_type", ctx.exception.args[0])
+        self.assertIn("arguments", ctx.exception.args[0])
         self.assertEqual(Application.objects.count(), 0)
 
     def test_command_creates_application_with_skipped_auth(self):
@@ -113,7 +113,7 @@ class CreateApplicationTest(TestCase):
         self.assertEqual(app.user, user)
 
     def test_validation_failed_message(self):
-        output = StringIO()
+        output = (BytesIO if six.PY2 else StringIO)()
         call_command(
             "createapplication",
             "confidential",

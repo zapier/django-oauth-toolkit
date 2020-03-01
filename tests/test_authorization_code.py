@@ -3,7 +3,6 @@ import datetime
 import hashlib
 import json
 import re
-from urllib.parse import parse_qs, urlencode, urlparse
 
 from django.contrib.auth import get_user_model
 from django.test import RequestFactory, TestCase
@@ -11,6 +10,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 from oauthlib.oauth2.rfc6749 import errors as oauthlib_errors
+from six.moves.urllib.parse import parse_qs, urlencode, urlparse
 
 from oauth2_provider.models import (
     get_access_token_model, get_application_model,

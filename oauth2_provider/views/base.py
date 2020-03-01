@@ -1,6 +1,5 @@
 import json
 import logging
-import urllib.parse
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse, JsonResponse
@@ -11,6 +10,8 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import FormView, View
+from django.shortcuts import render
+from six.moves.urllib.parse import parse_qs, urlparse
 
 from ..exceptions import OAuthToolkitError
 from ..forms import AllowForm
@@ -38,14 +39,14 @@ class BaseAuthorizationView(LoginRequiredMixin, OAuthLibMixin, View):
 
     def dispatch(self, request, *args, **kwargs):
         self.oauth2_data = {}
-        return super().dispatch(request, *args, **kwargs)
+        return super(BaseAuthorizationView, self).dispatch(request, *args, **kwargs)
 
     def error_response(self, error, application, **kwargs):
         """
         Handle errors either by redirecting to redirect_uri with a json in the body containing
         error details or providing an error response
         """
-        redirect, error_response = super().error_response(error, **kwargs)
+        redirect, error_response = super(BaseAuthorizationView, self).error_response(error, **kwargs)
 
         if redirect:
             return self.redirect(error_response["url"], application)
@@ -214,10 +215,10 @@ class AuthorizationView(BaseAuthorizationView, FormView):
     def redirect(self, redirect_to, application, token=None):
 
         if not redirect_to.startswith("urn:ietf:wg:oauth:2.0:oob"):
-            return super().redirect(redirect_to, application)
+            return super(AuthorizationView, self).redirect(redirect_to, application)
 
-        parsed_redirect = urllib.parse.urlparse(redirect_to)
-        code = urllib.parse.parse_qs(parsed_redirect.query)["code"][0]
+        parsed_redirect = urlparse(redirect_to)
+        code = parse_qs(parsed_redirect.query)["code"][0]
 
         if redirect_to.startswith("urn:ietf:wg:oauth:2.0:oob:auto"):
 
