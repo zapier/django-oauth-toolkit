@@ -1,10 +1,10 @@
 import json
-from urllib.parse import parse_qs, urlparse
 
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ImproperlyConfigured
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
+from six.moves.urllib.parse import parse_qs, urlparse
 
 from oauth2_provider.models import (
     get_access_token_model, get_application_model, get_grant_model

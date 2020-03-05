@@ -3,7 +3,6 @@ import binascii
 import logging
 from collections import OrderedDict
 from datetime import datetime, timedelta
-from urllib.parse import unquote_plus
 
 import requests
 from django.conf import settings
@@ -15,6 +14,7 @@ from django.utils import timezone
 from django.utils.timezone import make_aware
 from django.utils.translation import gettext_lazy as _
 from oauthlib.oauth2 import RequestValidator
+from six.moves.urllib.parse import unquote_plus
 
 from .exceptions import FatalClientError
 from .models import (
@@ -214,7 +214,7 @@ class OAuth2Validator(RequestValidator):
         if request.client:
             return request.client.client_type == AbstractApplication.CLIENT_CONFIDENTIAL
 
-        return super().client_authentication_required(request, *args, **kwargs)
+        return super(OAuth2Validator, self).client_authentication_required(request, *args, **kwargs)
 
     def authenticate_client(self, request, *args, **kwargs):
         """
@@ -480,7 +480,7 @@ class OAuth2Validator(RequestValidator):
         # expires_in is passed to Server on initialization
         # custom server class can have logic to override this
         expires = timezone.now() + timedelta(seconds=token.get(
-            'expires_in', oauth2_settings.ACCESS_TOKEN_EXPIRE_SECONDS,
+            "expires_in", oauth2_settings.ACCESS_TOKEN_EXPIRE_SECONDS,
         ))
 
         if request.grant_type == "client_credentials":

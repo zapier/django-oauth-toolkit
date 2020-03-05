@@ -17,7 +17,7 @@ class AuthorizedTokensListView(LoginRequiredMixin, ListView):
         """
         Show only user"s tokens
         """
-        return super().get_queryset().select_related("application").filter(
+        return super(AuthorizedTokensListView, self).get_queryset().select_related("application").filter(
             user=self.request.user
         )
 
@@ -31,4 +31,4 @@ class AuthorizedTokenDeleteView(LoginRequiredMixin, DeleteView):
     model = get_access_token_model()
 
     def get_queryset(self):
-        return super().get_queryset().filter(user=self.request.user)
+        return super(AuthorizedTokenDeleteView, self).get_queryset().filter(user=self.request.user)

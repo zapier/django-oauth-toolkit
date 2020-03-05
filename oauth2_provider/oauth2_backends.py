@@ -1,8 +1,8 @@
 import json
-from urllib.parse import urlparse, urlunparse
 
 from oauthlib import oauth2
 from oauthlib.common import quote, urlencode, urlencoded
+from six.moves.urllib.parse import urlparse, urlunparse
 
 from .exceptions import FatalClientError, OAuthToolkitError
 from .settings import oauth2_settings

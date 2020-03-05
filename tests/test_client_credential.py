@@ -1,11 +1,11 @@
 import json
-from urllib.parse import quote_plus
 
 from django.contrib.auth import get_user_model
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
 from django.views.generic import View
 from oauthlib.oauth2 import BackendApplicationServer
+from six.moves.urllib.parse import quote_plus
 
 from oauth2_provider.models import get_access_token_model, get_application_model
 from oauth2_provider.oauth2_backends import OAuthLibCore
